@@ -10,22 +10,32 @@ if (!defined('ABSPATH')) {
   exit;
 }
 
-// Register block
-function firsttheme_blocks_register() {
-  wp_register_script(
-    'firsttheme-blocks-firstblock-editor-script', // Script handle
-    plugins_url('blocks/firstblock/index.js', __FILE__), // File Url
-    array('wp-blocks','wp-i18n','wp-element') // Deps
-  );
-
+function firsttheme_blocks_register_block_type($block, $options = array()) {
   register_block_type(
-    'firsttheme-blocks/firstblock', array(
-      'editor_script' => 'firsttheme-blocks-firstblock-editor-script',
-      // 'script',
-      // 'editor_style',
-      // 'style',
+    'firsttheme-blocks/'.$block,
+    array_merge(
+      array(
+        'editor_script' => 'firsttheme-blocks-editor-script',
+        // 'script',
+        // 'editor_style',
+        // 'style',
+      ),
+      $options
     )
   );
 }
+
+// Register block
+function firsttheme_blocks_register() {
+  wp_register_script(
+    'firsttheme-blocks-editor-script', // Script handle
+    plugins_url('dist/editor.js', __FILE__), // File Url
+    array('wp-blocks','wp-i18n','wp-element') // Deps
+  );
+
+  firsttheme_blocks_register_block_type('firstblock');
+  firsttheme_blocks_register_block_type('secondblock');
+}
 add_action('init', 'firsttheme_blocks_register');
+
 ?>
