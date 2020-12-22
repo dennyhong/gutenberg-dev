@@ -11,6 +11,9 @@
   "author": "Denny Hong <hong961127@gmail.com>",
   "license": "ISC",
   "dependencies": {
+    "@wordpress/blocks": "^6.25.0",
+    "@wordpress/i18n": "^3.17.0",
+    "jquery": "^3.5.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
   },

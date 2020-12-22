@@ -38,7 +38,8 @@ function firsttheme_blocks_register() {
   // Register frontend script
   wp_register_script(
     'firsttheme-blocks-script', // Script handle
-    plugins_url('dist/script.js', __FILE__) // File Url
+    plugins_url('dist/script.js', __FILE__), // File Url
+    array('jquery')
   );
 
   // Register editor styles

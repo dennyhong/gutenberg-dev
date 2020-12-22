@@ -82,5 +82,12 @@ module.exports = (env, argv) => {
 
     // Source Maps
     devtool: isDevelopment() ? "cheap-module-source-map" : "source-map",
+
+    // Skip bundling: Look for global variable instead of node_modules
+    externals: {
+      jquery: "jQuery",
+      "@wordpress/blocks": ["wp", "blocks"],
+      "@wordpress/i18n": ["wp", "i18n"],
+    },
   };
 };

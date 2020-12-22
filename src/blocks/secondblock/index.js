@@ -1,10 +1,7 @@
-import "./styles.editor.scss";
+import { registerBlockType } from "@wordpress/blocks";
+import { __ } from "@wordpress/i18n";
 
-const {
-  blocks: { registerBlockType },
-  i18n: { __ },
-  element: { createElement: el },
-} = wp;
+import "./styles.editor.scss";
 
 registerBlockType("firsttheme-blocks/secondblock", {
   title: __("Second Block", "firsttheme-blocks"), // Block name, domain
