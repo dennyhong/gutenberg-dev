@@ -36,22 +36,25 @@ module.exports = (env, argv) => {
         {
           test: /\.js$/,
           exclude: /node_modules/,
-          use: {
-            loader: "babel-loader",
-            options: {
-              presets: [
-                "@babel/preset-env", // Respect package.json browserslist
-                [
-                  "@babel/preset-react",
-                  {
-                    pragma: "wp.element.createElement",
-                    pragmaFrag: "wp.element.Fragment",
-                    development: isDevelopment(),
-                  },
+          use: [
+            {
+              loader: "babel-loader",
+              options: {
+                presets: [
+                  "@babel/preset-env", // Respect package.json browserslist
+                  [
+                    "@babel/preset-react",
+                    {
+                      pragma: "wp.element.createElement",
+                      pragmaFrag: "wp.element.Fragment",
+                      development: isDevelopment(),
+                    },
+                  ],
                 ],
-              ],
+              },
             },
-          },
+            "eslint-loader", // Lint files before babel
+          ],
         },
 
         // Sass, css, & style loader
