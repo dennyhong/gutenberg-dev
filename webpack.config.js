@@ -11,10 +11,13 @@ module.exports = (env, argv) => {
   }
 
   return {
-    entry: "./src/editor.js",
+    entry: {
+      editor: "./src/editor.js", // Editor only script
+      script: "./src/scripts.js", // Frontend + Editor script
+    },
 
     output: {
-      filename: "editor.js",
+      filename: "[name].js", // [name] indicates dynamic file name
       path: path.resolve(process.cwd(), "dist"),
     },
 
@@ -22,7 +25,8 @@ module.exports = (env, argv) => {
       new CleanWebpackPlugin(),
       // Extract CSS into separate files
       new MiniCssExtractPlugin({
-        filename: "editor.css",
+        chunkFilename: "[id].css", // In order to pass function as filename
+        filename: (chunkData) => (chunkData.chunk.name === "script" ? "style.css" : "[name].css"),
       }),
     ],
 

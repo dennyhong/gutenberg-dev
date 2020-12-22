@@ -1,3 +1,5 @@
+import "./styles.editor.scss";
+
 const {
   blocks: { registerBlockType },
   i18n: { __ },
@@ -16,8 +18,8 @@ registerBlockType("firsttheme-blocks/secondblock", {
   ),
   keywords: [__("photo", "firsttheme-blocks"), __("image", "firsttheme-blocks")],
 
-  edit() {
-    return <p>Editor</p>;
+  edit({ className }) {
+    return <p className={className}>Editor</p>;
   },
 
   save() {
