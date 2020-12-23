@@ -1,5 +1,6 @@
 import { registerBlockType } from "@wordpress/blocks";
 import { __ } from "@wordpress/i18n";
+import { RichText } from "@wordpress/editor";
 
 import "./styles.editor.scss";
 
@@ -22,11 +23,32 @@ registerBlockType("firsttheme-blocks/secondblock", {
 		__("image", "firsttheme-blocks"),
 	],
 
-	edit({ className }) {
-		return <p className={className}>Editor</p>;
+	// State
+	attributes: {
+		content: {
+			type: "string",
+			source: "html",
+			selector: "p",
+		},
 	},
 
-	save() {
-		return <p>Saved Content</p>;
+	edit({ attributes, setAttributes, className }) {
+		const { content } = attributes;
+		const handleContentChange = (value) => setAttributes({ content: value });
+
+		return (
+			<RichText
+				tagName="p"
+				className={className}
+				onChange={handleContentChange}
+				value={content}
+				formattingControls={["bold"]}
+			/>
+		);
+	},
+
+	save({ attributes }) {
+		const { content } = attributes;
+		return <RichText.Content tagName="p" value={content} />;
 	},
 });

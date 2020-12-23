@@ -13,8 +13,10 @@ module.exports = {
 	},
 	plugins: ["react"],
 	rules: {
+		"no-console": "off",
 		"react/react-in-jsx-scope": "off",
 		"react/prop-types": "off",
+		"react/display-name": "off",
 	},
 	globals: { wp: "readonly" },
 	ignorePatterns: [".eslintrc.js", "webpack.config.js", "gulpfile.js"],

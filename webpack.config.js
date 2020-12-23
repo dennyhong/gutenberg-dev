@@ -22,6 +22,7 @@ module.exports = (env, argv) => {
 		},
 
 		plugins: [
+			// Clears dist folder
 			new CleanWebpackPlugin(),
 			// Extract CSS into separate files
 			new MiniCssExtractPlugin({
@@ -92,6 +93,8 @@ module.exports = (env, argv) => {
 			jquery: "jQuery",
 			"@wordpress/blocks": ["wp", "blocks"],
 			"@wordpress/i18n": ["wp", "i18n"],
+			"@wordpress/editor": ["wp", "editor"],
+			"@wordpress/components": ["wp", "components"],
 		},
 	};
 };
