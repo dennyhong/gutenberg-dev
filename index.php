@@ -75,7 +75,48 @@ function firsttheme_blocks_register() {
   firsttheme_blocks_register_block_type('secondblock');
   firsttheme_blocks_register_block_type('team-member');
   firsttheme_blocks_register_block_type('team-members');
+
+  // Dynamic Block
+  // Attributes of dynamic blocks need to be declared in php arrays
+  firsttheme_blocks_register_block_type('latest-posts', array(
+    'render_callback' => 'firsttheme_blocks_render_latest_posts_block',
+    'attributes' => array(
+      'numberOfPosts' => array(
+        'type' => 'number',
+        'default' => 5
+      ),
+      'postCategories' => array(
+        'type' => "string"
+      )
+    )
+  ));
 }
+
 add_action('init', 'firsttheme_blocks_register');
+
+function firsttheme_blocks_render_latest_posts_block( $attributes ) {
+  // HTML returned here gets displayed client side
+  $args = array(
+    'posts_per_page' => $attributes['numberOfPosts']
+  );
+  $query = new WP_Query($args);
+  $posts = '';
+
+  if ($query->have_posts()) {
+    $posts .= '<ul class="wp-block-firsttheme-blocks-latest-posts">';
+
+    while ($query->have_posts()) {
+      $query->the_post();
+      $posts .= '<li><a href="'. esc_url(get_the_permalink()) . '">'
+      . get_the_title() . '</a></li>';
+    }
+
+    $posts .= '</ul>';
+    wp_reset_postdata(); // Required after each custom loop
+    return $posts;
+  } else {
+    return '<div' . __('No Posts Found','firsttheme-blocks') . '</div>';
+  }
+}
 
 ?>

@@ -1,7 +1,6 @@
 import { registerBlockType, createBlock } from "@wordpress/blocks";
 import { InnerBlocks, InspectorControls } from "@wordpress/editor";
 import { PanelBody, RangeControl } from "@wordpress/components";
-
 import { __ } from "@wordpress/i18n";
 
 const attributes = {
@@ -67,7 +66,7 @@ registerBlockType("firsttheme-blocks/team-members", {
 
 		return (
 			<div className={`${className} has-${columns}-columns`}>
-				{/* Number of columns */}
+				{/* Controls number of columns */}
 				<InspectorControls>
 					<PanelBody>
 						<RangeControl
@@ -81,9 +80,10 @@ registerBlockType("firsttheme-blocks/team-members", {
 					</PanelBody>
 				</InspectorControls>
 
-				{/* Take team-member as inner blocks */}
+				{/* Only takes team-member as inner blocks */}
 				<InnerBlocks
 					allowedBlocks={["firsttheme-blocks/team-member"]}
+					// Defaults
 					template={[
 						["firsttheme-blocks/team-member", { title: "Member Name" }],
 						["firsttheme-blocks/team-member"],

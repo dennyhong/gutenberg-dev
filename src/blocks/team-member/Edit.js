@@ -1,4 +1,5 @@
 import { Fragment, useEffect, useState, useRef } from "@wordpress/element";
+import { useSelect } from "@wordpress/data";
 import {
 	RichText,
 	MediaPlaceholder,
@@ -8,6 +9,7 @@ import {
 	InspectorControls,
 	URLInput,
 } from "@wordpress/editor";
+
 import {
 	Spinner,
 	withNotices,
@@ -20,7 +22,6 @@ import {
 	Tooltip,
 	TextControl,
 } from "@wordpress/components";
-import { useSelect } from "@wordpress/data";
 import { isBlobURL } from "@wordpress/blob";
 import { __ } from "@wordpress/i18n";
 import {
@@ -36,13 +37,10 @@ const Edit = ({
 	noticeOperations,
 	noticeUI,
 	isSelected,
-	...rest
 }) => {
 	const { title, info, url, alt, id, social } = attributes;
 
-	console.log(rest);
-
-	// Select from redux store
+	// Select image and theme sizes from redux store
 	const { image, imageSizes } = useSelect(
 		(select) => {
 			const image = select("core").getMedia(id);
@@ -52,6 +50,19 @@ const Edit = ({
 		[id]
 	);
 
+	// Makes theme image sizes as available image sizes to choose from
+	const getImageSizes = () => {
+		return image
+			? Object.entries(image.media_details.sizes)
+					.filter(([key]) => imageSizes.some((size) => size.slug === key))
+					.map(([key, val]) => ({
+						label: imageSizes.find((size) => size.slug === key).name,
+						value: val.source_url,
+					}))
+			: [];
+	};
+
+	// Get rid of temp blob urls on load (if any)
 	useEffect(() => {
 		if (url && isBlobURL(url) && !id) {
 			setAttributes({ url: "", alt: "" });
@@ -61,7 +72,7 @@ const Edit = ({
 
 	const [selectedSocialIdx, setSelectedSocialIdx] = useState(null);
 
-	// Reset selected link to null after blur
+	// Reset selected social icon to null after blur
 	const isSelectedRef = useRef(false);
 	useEffect(() => {
 		if (isSelectedRef.current && !isSelected) {
@@ -95,17 +106,6 @@ const Edit = ({
 	const handleSetAlt = (val) => setAttributes({ alt: val });
 
 	const handleImageSizeChange = (url) => setAttributes({ url });
-
-	const getImageSizes = () => {
-		return image
-			? Object.entries(image.media_details.sizes)
-					.filter(([key]) => imageSizes.some((size) => size.slug === key))
-					.map(([key, val]) => ({
-						label: imageSizes.find((size) => size.slug === key).name,
-						value: val.source_url,
-					}))
-			: [];
-	};
 
 	const handleAddNewSocial = () => {
 		setAttributes({ social: [...social, { icon: "wordpress", link: "" }] });
@@ -170,7 +170,7 @@ const Edit = ({
 
 	return (
 		<Fragment>
-			{/* Content Area Controls */}
+			{/* BlockControls - Content Area Controls */}
 			<BlockControls>
 				{url && (
 					<Toolbar>
@@ -206,7 +206,7 @@ const Edit = ({
 				)}
 			</BlockControls>
 
-			{/* Sidebar Controls */}
+			{/* InspectorControls - Sidebar Controls */}
 			<InspectorControls>
 				<PanelBody title={__("Image Settings", "firsttheme-blocks")}>
 					{url && !isBlobURL(url) && (
@@ -221,7 +221,7 @@ const Edit = ({
 						/>
 					)}
 
-					{/* If image is in library, it has different sizes */}
+					{/* If image is in library, it has an `id` and different sizes */}
 					{id && (
 						<SelectControl
 							label={__("Image Sizes", "firsttheme-blocks")}
@@ -232,6 +232,7 @@ const Edit = ({
 				</PanelBody>
 			</InspectorControls>
 
+			{/* Block Content */}
 			<div className={className}>
 				{url ? (
 					<Fragment>

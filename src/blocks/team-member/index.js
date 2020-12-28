@@ -19,6 +19,7 @@ const attributes = {
 		selector: "p",
 	},
 
+	// Image
 	id: {
 		type: "number",
 	},
@@ -36,13 +37,14 @@ const attributes = {
 		defatul: "",
 	},
 
-	// Avoid saving social icons array data into DB, source data from HTML
+	// Social Icons
 	social: {
 		type: "array",
 		default: [
 			{ link: "http://facebook.com", icon: "facebook" },
 			{ link: "http://twitter.com", icon: "twitter" },
 		],
+		// Avoid saving social icons array data into DB, source data from HTML data attributes
 		source: "query",
 		selector: ".wp-block-firsttheme-blocks-team-member__social ul li",
 		query: {
@@ -89,6 +91,7 @@ registerBlockType("firsttheme-blocks/team-member", {
 
 		return (
 			<div>
+				{/* Image */}
 				{url && (
 					<img
 						className={id ? `wp-image-${id}` : ""} // Responsive image class
@@ -96,6 +99,8 @@ registerBlockType("firsttheme-blocks/team-member", {
 						alt={alt}
 					/>
 				)}
+
+				{/* Text */}
 				{title && (
 					<RichText.Content
 						className={`wp-block-firsttheme-blocks-team-member__title`}
@@ -110,6 +115,8 @@ registerBlockType("firsttheme-blocks/team-member", {
 						value={info}
 					/>
 				)}
+
+				{/* Social Icons */}
 				{social.length && (
 					<div className={`wp-block-firsttheme-blocks-team-member__social`}>
 						<ul>

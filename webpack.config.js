@@ -1,8 +1,8 @@
+const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin"); // Comes with Webpack5
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-const path = require("path");
 
 module.exports = (env, argv) => {
 	// Check if in development mode
