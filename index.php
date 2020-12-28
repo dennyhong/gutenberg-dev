@@ -10,6 +10,22 @@ if (!defined('ABSPATH')) {
   exit;
 }
 
+// Add block categories
+function firsttheme_blocks_categories( $categories, $post ) {
+  // $post is used to add category for specific post types
+  return array_merge(
+    $categories,
+    array(
+      array(
+        'slug' => 'firsttheme-category',
+        'title' => __('First theme Category', 'firsttheme-blocks'),
+        'icon' => 'wordpress'
+      )
+    )
+  );
+}
+add_filter( 'block_categories', 'firsttheme_blocks_categories', 10, 2);
+
 // Regsiter block helper
 function firsttheme_blocks_register_block_type($block, $options = array()) {
   register_block_type(

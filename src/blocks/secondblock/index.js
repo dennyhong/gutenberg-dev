@@ -1,13 +1,39 @@
 import { registerBlockType } from "@wordpress/blocks";
 import { __ } from "@wordpress/i18n";
-import { RichText } from "@wordpress/editor";
+import { RichText, getColorClassName } from "@wordpress/editor";
+import classNames from "classnames";
 
+import Edit from "./Edit";
 import "./styles.editor.scss";
+
+export const attributes = {
+	content: {
+		type: "string",
+		source: "html", // Get content from html directly, don't save as JSON in DB
+		selector: "h4",
+	},
+
+	textAlignment: { type: "string" },
+
+	color: { type: "string" },
+	backgroundColor: { type: "string" },
+	customColor: { type: "string" },
+	customBackgroundColor: { type: "string" },
+
+	boxShadow: {
+		type: "boolean",
+		default: false,
+	},
+	shadowOpacity: {
+		type: "number",
+		default: 0.3,
+	},
+};
 
 registerBlockType("firsttheme-blocks/secondblock", {
 	title: __("Second Block", "firsttheme-blocks"), // Block name, domain
 	description: __("My second block", "firsttheme-blocks"),
-	category: "layout",
+	category: "firsttheme-category",
 	icon: (
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
@@ -23,32 +49,192 @@ registerBlockType("firsttheme-blocks/secondblock", {
 		__("image", "firsttheme-blocks"),
 	],
 
-	// State
-	attributes: {
-		content: {
-			type: "string",
-			source: "html",
-			selector: "p",
+	styles: [
+		{
+			name: "rounded",
+			label: __("Rounded", "firsttheme-blocks"),
+			isDefault: true,
 		},
-	},
+		{
+			name: "outline",
+			label: __("Outline", "firsttheme-blocks"),
+		},
+		{
+			name: "squared",
+			label: __("Squared", "firsttheme-blocks"),
+		},
+	],
 
-	edit({ attributes, setAttributes, className }) {
-		const { content } = attributes;
-		const handleContentChange = (value) => setAttributes({ content: value });
+	// States
+	attributes,
 
-		return (
-			<RichText
-				tagName="p"
-				className={className}
-				onChange={handleContentChange}
-				value={content}
-				formattingControls={["bold"]}
-			/>
-		);
-	},
+	deprecated: [
+		// Changed "alignment" to "textAlignment"
+		{
+			// How `attributes` looked like before changes
+			attributes: {
+				...Object.entries(attributes).reduce(
+					(acc, [key, val]) =>
+						key === "textAlignment" ? acc : { ...acc, [key]: val },
+					{}
+				),
+			},
+			// How to transform old `attributes` to new `attributes`
+			migrate(attributes) {
+				return {
+					...Object.entries(attributes).reduce(
+						(acc, [key, val]) =>
+							key === "alignment" ? acc : { ...acc, [key]: val },
+						{ textAlignment: attributes.alignment }
+					),
+				};
+			},
+			save({ attributes }) {
+				const {
+					content,
+					alignment,
+					backgroundColor,
+					color,
+					customColor, // From withColor HOC
+					customBackgroundColor,
+					boxShadow,
+					shadowOpacity,
+				} = attributes;
+
+				const backgroundClass = getColorClassName(
+					"background-color",
+					backgroundColor
+				);
+				const textClass = getColorClassName("color", color);
+
+				return (
+					<RichText.Content
+						className={classNames({
+							[textClass]: !!textClass,
+							[backgroundClass]: !!backgroundClass,
+							["has-shadow"]: boxShadow,
+							[`shadow-opacity-${shadowOpacity * 100}`]: shadowOpacity,
+						})}
+						tagName="h4"
+						value={content}
+						style={{
+							textAlign: alignment,
+							backgroundColor: !backgroundClass
+								? customBackgroundColor
+								: undefined,
+							color: !textClass ? customColor : undefined,
+						}}
+					/>
+				);
+			},
+		},
+
+		// Changed "p" to "h4"
+		{
+			// supports
+			attributes: {
+				...Object.entries(attributes).reduce(
+					(acc, [key, val]) =>
+						key === "textAlignment"
+							? acc
+							: key === "content"
+							? {
+									...acc,
+									content: {
+										...attributes.content,
+										selector: "p",
+									},
+							  }
+							: { ...acc, [key]: val },
+					{}
+				),
+			},
+			migrate(attributes) {
+				return {
+					...Object.entries(attributes).reduce(
+						(acc, [key, val]) =>
+							key === "alignment" ? acc : { ...acc, [key]: val },
+						{ textAlignment: attributes.alignment }
+					),
+				};
+			},
+			save({ attributes }) {
+				const {
+					content,
+					textAlignment,
+					backgroundColor,
+					color,
+					customColor, // From withColor HOC
+					customBackgroundColor,
+					boxShadow,
+					shadowOpacity,
+				} = attributes;
+
+				const backgroundClass = getColorClassName(
+					"background-color",
+					backgroundColor
+				);
+				const textClass = getColorClassName("color", color);
+
+				return (
+					<RichText.Content
+						className={classNames({
+							[textClass]: !!textClass,
+							[backgroundClass]: !!backgroundClass,
+							["has-shadow"]: boxShadow,
+							[`shadow-opacity-${shadowOpacity * 100}`]: shadowOpacity,
+						})}
+						tagName="p"
+						value={content}
+						style={{
+							textAlign: textAlignment,
+							backgroundColor: !backgroundClass
+								? customBackgroundColor
+								: undefined,
+							color: !textClass ? customColor : undefined,
+						}}
+					/>
+				);
+			},
+		},
+	],
+
+	edit: Edit,
 
 	save({ attributes }) {
-		const { content } = attributes;
-		return <RichText.Content tagName="p" value={content} />;
+		const {
+			content,
+			textAlignment,
+			backgroundColor,
+			color,
+			customColor, // From withColor HOC
+			customBackgroundColor,
+			boxShadow,
+			shadowOpacity,
+		} = attributes;
+
+		const backgroundClass = getColorClassName(
+			"background-color",
+			backgroundColor
+		);
+		const textClass = getColorClassName("color", color);
+
+		return (
+			<RichText.Content
+				className={classNames({
+					[textClass]: !!textClass,
+					[backgroundClass]: !!backgroundClass,
+					["has-shadow"]: boxShadow,
+					[`shadow-opacity-${shadowOpacity * 100}`]: shadowOpacity,
+				})}
+				tagName="h4"
+				value={content}
+				style={{
+					textAlign: textAlignment,
+					backgroundColor: !backgroundClass ? customBackgroundColor : undefined,
+					color: !textClass ? customColor : undefined,
+				}}
+			/>
+		);
 	},
 });

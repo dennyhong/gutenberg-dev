@@ -95,6 +95,7 @@ module.exports = (env, argv) => {
 			"@wordpress/i18n": ["wp", "i18n"],
 			"@wordpress/editor": ["wp", "editor"],
 			"@wordpress/components": ["wp", "components"],
+			"@wordpress/element": ["wp", "element"],
 		},
 	};
 };
