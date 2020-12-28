@@ -39,8 +39,6 @@ const Edit = ({
 		[id]
 	);
 
-	console.log(image, imageSizes);
-
 	useEffect(() => {
 		if (url && isBlobURL(url) && !id) {
 			setAttributes({ url: "", alt: "" });
