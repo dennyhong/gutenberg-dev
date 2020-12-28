@@ -5,7 +5,7 @@
 	"main": "src/index.js",
 	"scripts": {
 		"lint": "eslint src",
-		"start": "webpack --mode=development --watch",
+		"start": "webpack --mode=development",
 		"build": "npm run lint && webpack --mode=production && gulp bundle",
 		"checkFormat": "prettier --check \"**/*.{js,json,css,scss}\"",
 		"format": "prettier --write \"**/*.{js,json,css,scss}\""
@@ -29,6 +29,7 @@
 		"@wordpress/blob": "^2.12.0",
 		"@wordpress/blocks": "^6.25.0",
 		"@wordpress/components": "^12.0.0",
+		"@wordpress/data": "^4.26.0",
 		"@wordpress/editor": "^9.25.0",
 		"@wordpress/element": "^2.19.0",
 		"@wordpress/i18n": "^3.17.0",

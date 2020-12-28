@@ -5,13 +5,18 @@ import {
 	MediaUpload,
 	MediaUploadCheck,
 	BlockControls,
+	InspectorControls,
 } from "@wordpress/editor";
 import {
 	Spinner,
 	withNotices,
 	Toolbar,
 	IconButton,
+	PanelBody,
+	TextareaControl,
+	SelectControl,
 } from "@wordpress/components";
+import { useSelect } from "@wordpress/data";
 import { isBlobURL } from "@wordpress/blob";
 import { __ } from "@wordpress/i18n";
 
@@ -23,6 +28,18 @@ const Edit = ({
 	noticeUI,
 }) => {
 	const { title, info, url, alt, id } = attributes;
+
+	// Select from redux store
+	const { image, imageSizes } = useSelect(
+		(select) => {
+			const image = select("core").getMedia(id);
+			const imageSizes = select("core/editor").getEditorSettings().imageSizes;
+			return { image, imageSizes };
+		},
+		[id]
+	);
+
+	console.log(image, imageSizes);
 
 	useEffect(() => {
 		if (url && isBlobURL(url) && !id) {
@@ -49,8 +66,24 @@ const Edit = ({
 		setAttributes({ id: null, url: "", alt: "" });
 	};
 
+	const handleSetAlt = (val) => setAttributes({ alt: val });
+
+	const handleImageSizeChange = (url) => setAttributes({ url });
+
+	const getImageSizes = () => {
+		return image
+			? Object.entries(image.media_details.sizes)
+					.filter(([key]) => imageSizes.some((size) => size.slug === key))
+					.map(([key, val]) => ({
+						label: imageSizes.find((size) => size.slug === key).name,
+						value: val.source_url,
+					}))
+			: [];
+	};
+
 	return (
 		<Fragment>
+			{/* Content Area Controls */}
 			<BlockControls>
 				{url && (
 					<Toolbar>
@@ -85,6 +118,32 @@ const Edit = ({
 					</Toolbar>
 				)}
 			</BlockControls>
+
+			{/* Sidebar Controls */}
+			<InspectorControls>
+				<PanelBody title={__("Image Settings", "firsttheme-blocks")}>
+					{url && !isBlobURL(url) && (
+						<TextareaControl
+							label={__("Alt Text (Alternative Text)", "firsttheme-blocks")}
+							value={alt}
+							onChange={handleSetAlt}
+							help={__(
+								"Alt text helps screen-reading tools describe images to visually impaired readers and allows search engines to better crawl and rank your website.",
+								"firsttheme-blocks"
+							)}
+						/>
+					)}
+
+					{/* If image is in library, it has different sizes */}
+					{id && (
+						<SelectControl
+							label={__("Image Sizes", "firsttheme-blocks")}
+							options={getImageSizes()}
+							onChange={handleImageSizeChange}
+						/>
+					)}
+				</PanelBody>
+			</InspectorControls>
 
 			<div className={className}>
 				{url ? (

@@ -88,8 +88,10 @@ module.exports = (env, argv) => {
 		// Source Maps
 		devtool: isDevelopment() ? "cheap-module-source-map" : "source-map",
 
+		watch: isDevelopment(),
 		watchOptions: {
-			poll: true,
+			aggregateTimeout: 200,
+			poll: 1000,
 			ignored: path.resolve(__dirname, "node_modules"),
 		},
 
@@ -103,6 +105,7 @@ module.exports = (env, argv) => {
 			"@wordpress/components": ["wp", "components"],
 			"@wordpress/element": ["wp", "element"],
 			"@wordpress/blob": ["wp", "blob"],
+			"@wordpress/data": ["wp", "data"],
 		},
 	};
 };
