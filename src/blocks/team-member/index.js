@@ -17,6 +17,23 @@ const attributes = {
 		source: "html",
 		selector: "p",
 	},
+
+	id: {
+		type: "number",
+	},
+	url: {
+		type: "string",
+		source: "attribute",
+		selector: "img",
+		attribute: "src",
+	},
+	alt: {
+		type: "string",
+		source: "attribute",
+		selector: "img",
+		attribute: "alt",
+		defatul: "",
+	},
 };
 
 registerBlockType("firsttheme-blocks/team-member", {
@@ -45,10 +62,17 @@ registerBlockType("firsttheme-blocks/team-member", {
 	edit: Edit,
 
 	save({ attributes }) {
-		const { title, info } = attributes;
-		console.log(title, info);
+		const { title, info, url, alt, id } = attributes;
+
 		return (
 			<div>
+				{url && (
+					<img
+						className={id ? `wp-image-${id}` : ""} // Responsive image class
+						src={url}
+						alt={alt}
+					/>
+				)}
 				{title && (
 					<RichText.Content
 						className={`wp-block-firsttheme-blocks-team-member__title`}

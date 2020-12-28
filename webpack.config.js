@@ -18,7 +18,7 @@ module.exports = (env, argv) => {
 
 		output: {
 			filename: "[name].js", // [name] indicates dynamic file name
-			path: path.resolve(process.cwd(), "dist"),
+			path: path.resolve(__dirname, "dist"),
 		},
 
 		plugins: [
@@ -91,11 +91,13 @@ module.exports = (env, argv) => {
 		// Skip bundling: Look for global variable instead of node_modules
 		externals: {
 			jquery: "jQuery",
+			lodash: "lodash",
 			"@wordpress/blocks": ["wp", "blocks"],
 			"@wordpress/i18n": ["wp", "i18n"],
 			"@wordpress/editor": ["wp", "editor"],
 			"@wordpress/components": ["wp", "components"],
 			"@wordpress/element": ["wp", "element"],
+			"@wordpress/blob": ["wp", "blob"],
 		},
 	};
 };
