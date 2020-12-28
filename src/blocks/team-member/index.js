@@ -3,8 +3,8 @@ import { RichText } from "@wordpress/editor";
 import { Dashicon } from "@wordpress/components";
 import { __ } from "@wordpress/i18n";
 
-import "./parent";
 import Edit from "./Edit";
+import "./parent";
 import "./style.editor.scss";
 
 const attributes = {
@@ -40,8 +40,8 @@ const attributes = {
 	social: {
 		type: "array",
 		default: [
-			{ link: "http://facebook.com", icon: "wordpress" },
-			{ link: "http://twitter.com", icon: "wordpress" },
+			{ link: "http://facebook.com", icon: "facebook" },
+			{ link: "http://twitter.com", icon: "twitter" },
 		],
 		source: "query",
 		selector: ".wp-block-firsttheme-blocks-team-member__social ul li",
