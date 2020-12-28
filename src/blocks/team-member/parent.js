@@ -26,6 +26,7 @@ registerBlockType("firsttheme-blocks/team-members", {
 
 	supports: {
 		html: false, // Disable edit as html
+		align: ["wide", "full"],
 	},
 
 	attributes,

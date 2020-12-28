@@ -1,4 +1,4 @@
-import { Fragment, useEffect } from "@wordpress/element";
+import { Fragment, useEffect, useState, useRef } from "@wordpress/element";
 import {
 	RichText,
 	MediaPlaceholder,
@@ -6,6 +6,7 @@ import {
 	MediaUploadCheck,
 	BlockControls,
 	InspectorControls,
+	URLInput,
 } from "@wordpress/editor";
 import {
 	Spinner,
@@ -15,6 +16,9 @@ import {
 	PanelBody,
 	TextareaControl,
 	SelectControl,
+	Dashicon,
+	Tooltip,
+	TextControl,
 } from "@wordpress/components";
 import { useSelect } from "@wordpress/data";
 import { isBlobURL } from "@wordpress/blob";
@@ -26,8 +30,12 @@ const Edit = ({
 	className,
 	noticeOperations,
 	noticeUI,
+	isSelected,
+	...rest
 }) => {
-	const { title, info, url, alt, id } = attributes;
+	const { title, info, url, alt, id, social } = attributes;
+
+	console.log(rest);
 
 	// Select from redux store
 	const { image, imageSizes } = useSelect(
@@ -46,7 +54,22 @@ const Edit = ({
 		}
 	}, []);
 
-	const handleChange = (key) => (value) => setAttributes({ [key]: value });
+	const [selectedSocialIdx, setSelectedSocialIdx] = useState(null);
+
+	// Reset selected link to null after blur
+	const isSelectedRef = useRef(false);
+	useEffect(() => {
+		if (isSelectedRef.current && !isSelected) {
+			setSelectedSocialIdx(null);
+		}
+		if (isSelected) {
+			isSelectedRef.current = true;
+		} else {
+			isSelectedRef.current = false;
+		}
+	}, [isSelected]);
+
+	const handleTextChange = (key) => (value) => setAttributes({ [key]: value });
 
 	const handleSelectImage = ({ id, url, alt }) => {
 		setAttributes({ id, url, alt });
@@ -78,6 +101,18 @@ const Edit = ({
 					}))
 			: [];
 	};
+
+	const handleAddNewSocial = () => {
+		setAttributes({ social: [...social, { icon: "wordpress", link: "" }] });
+		setSelectedSocialIdx(social.length);
+	};
+
+	const handleSocialChange = (key) => (value) =>
+		setAttributes({
+			social: social.map((item, idx) =>
+				idx === selectedSocialIdx ? { ...item, [key]: value } : item
+			),
+		});
 
 	return (
 		<Fragment>
@@ -165,7 +200,7 @@ const Edit = ({
 					className={`wp-block-firsttheme-blocks-team-member__title`}
 					tagName="h4"
 					value={title}
-					onChange={handleChange("title")}
+					onChange={handleTextChange("title")}
 					placeholder={__("Member Name", "firsttheme-blocks")}
 					formattingControls={[]} // Disable user formatting
 				/>
@@ -174,10 +209,57 @@ const Edit = ({
 					className={`wp-block-firsttheme-blocks-team-member__info`}
 					tagName="p"
 					value={info}
-					onChange={handleChange("info")}
+					onChange={handleTextChange("info")}
 					placeholder={__("Member Info", "firsttheme-blocks")}
 					formattingControls={[]} // Disable user formatting
 				/>
+
+				{/* Social Icons */}
+				<div className={`wp-block-firsttheme-blocks-team-member__social`}>
+					<ul>
+						{social.map((item, idx) => (
+							<li
+								key={idx}
+								onClick={setSelectedSocialIdx.bind(this, idx)}
+								className={selectedSocialIdx === idx ? "is-selected" : ""}>
+								<Dashicon icon={item.icon} size={16} />
+							</li>
+						))}
+
+						{/* Add more social link */}
+						{isSelected && (
+							<li
+								className={`wp-block-firsttheme-blocks-team-member__addIconLi`}>
+								<Tooltip text={__("Add Item", "firsttheme-blocks")}>
+									<button
+										className={`wp-block-firsttheme-blocks-team-member__addIcon`}
+										onClick={handleAddNewSocial}>
+										<Dashicon icon="plus" size={16} />
+									</button>
+								</Tooltip>
+							</li>
+						)}
+					</ul>
+				</div>
+
+				{/* Edit icon form */}
+				{selectedSocialIdx && (
+					<div className={`wp-block-firsttheme-blocks-team-member__linkForm`}>
+						<TextControl
+							label={__("Icon", "firsttheme-blocks")}
+							value={social[selectedSocialIdx].icon}
+							onChange={handleSocialChange("icon")}
+						/>
+						<URLInput
+							label={__("URL", "firsttheme-blocks")}
+							value={social[selectedSocialIdx].link}
+							onChange={handleSocialChange("link")}
+						/>
+						<a className={`wp-block-firsttheme-blocks-team-member__removeLink`}>
+							{__("Remove Link", "firsttheme-blocks")}
+						</a>
+					</div>
+				)}
 			</div>
 		</Fragment>
 	);

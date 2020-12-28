@@ -88,6 +88,7 @@ module.exports = (env, argv) => {
 		// Source Maps
 		devtool: isDevelopment() ? "cheap-module-source-map" : "source-map",
 
+		// Watch Files
 		watch: isDevelopment(),
 		watchOptions: {
 			aggregateTimeout: 200,

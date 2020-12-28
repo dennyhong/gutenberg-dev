@@ -1,9 +1,10 @@
 import { registerBlockType } from "@wordpress/blocks";
 import { RichText } from "@wordpress/editor";
+import { Dashicon } from "@wordpress/components";
 import { __ } from "@wordpress/i18n";
 
 import "./parent";
-import Edit from "./edit";
+import Edit from "./Edit";
 import "./style.editor.scss";
 
 const attributes = {
@@ -34,6 +35,28 @@ const attributes = {
 		attribute: "alt",
 		defatul: "",
 	},
+
+	// Avoid saving social icons array data into DB, source data from HTML
+	social: {
+		type: "array",
+		default: [
+			{ link: "http://facebook.com", icon: "wordpress" },
+			{ link: "http://twitter.com", icon: "wordpress" },
+		],
+		source: "query",
+		selector: ".wp-block-firsttheme-blocks-team-member__social ul li",
+		query: {
+			icon: {
+				source: "attribute",
+				attribute: "data-icon",
+			},
+			link: {
+				source: "attribute",
+				selector: "a",
+				attribute: "href",
+			},
+		},
+	},
 };
 
 registerBlockType("firsttheme-blocks/team-member", {
@@ -62,7 +85,7 @@ registerBlockType("firsttheme-blocks/team-member", {
 	edit: Edit,
 
 	save({ attributes }) {
-		const { title, info, url, alt, id } = attributes;
+		const { title, info, url, alt, id, social } = attributes;
 
 		return (
 			<div>
@@ -86,6 +109,19 @@ registerBlockType("firsttheme-blocks/team-member", {
 						tagName="p"
 						value={info}
 					/>
+				)}
+				{social.length && (
+					<div className={`wp-block-firsttheme-blocks-team-member__social`}>
+						<ul>
+							{social.map((link, idx) => (
+								<li key={idx} data-icon={link.icon}>
+									<a href={link.link} target="_blank" rel="noopner noreferrer">
+										<Dashicon icon={link.icon} size={16} />
+									</a>
+								</li>
+							))}
+						</ul>
+					</div>
 				)}
 			</div>
 		);
