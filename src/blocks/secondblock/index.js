@@ -1,4 +1,4 @@
-import { registerBlockType } from "@wordpress/blocks";
+import { registerBlockType, createBlock } from "@wordpress/blocks";
 import { __ } from "@wordpress/i18n";
 import { RichText, getColorClassName } from "@wordpress/editor";
 import classNames from "classnames";
@@ -198,6 +198,47 @@ registerBlockType("firsttheme-blocks/secondblock", {
 			},
 		},
 	],
+
+	transforms: {
+		from: [
+			{
+				type: "block",
+				blocks: ["core/paragraph"],
+				transform({ content, align }) {
+					return createBlock("firsttheme-blocks/secondblock", {
+						content,
+						textAlignment: align,
+					});
+				},
+			},
+
+			// Shortcut, press # and space to create a block
+			{
+				type: "prefix",
+				prefix: "#",
+				transform() {
+					return createBlock("firsttheme-blocks/secondblock");
+				},
+			},
+		],
+
+		to: [
+			{
+				type: "block",
+				blocks: ["core/paragraph"],
+				isMatch({ content }) {
+					// Only show transform option if returns true
+					return !!content;
+				},
+				transform({ content, textAlignment }) {
+					return createBlock("core/paragraph", {
+						content,
+						align: textAlignment,
+					});
+				},
+			},
+		],
+	},
 
 	edit: Edit,
 

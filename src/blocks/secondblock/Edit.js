@@ -22,13 +22,8 @@ const Edit = ({
 	backgroundColor,
 	setColor,
 	setBackgroundColor,
-	...rest
 }) => {
-	console.log("rest", rest);
-
 	const { content, textAlignment, boxShadow, shadowOpacity } = attributes;
-
-	console.log("attributes", attributes);
 
 	const handleContentChange = (value) => setAttributes({ content: value });
 
