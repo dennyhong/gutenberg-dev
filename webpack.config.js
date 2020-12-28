@@ -93,7 +93,7 @@ module.exports = (env, argv) => {
 		watchOptions: {
 			aggregateTimeout: 200,
 			poll: 1000,
-			ignored: path.resolve(__dirname, "node_modules"),
+			ignored: "node_modules/**",
 		},
 
 		// Skip bundling: Look for global variable instead of node_modules

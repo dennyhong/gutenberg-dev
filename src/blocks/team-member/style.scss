@@ -56,6 +56,13 @@
 			}
 		}
 
+		&__addIcon {
+			padding: 2px;
+			line-height: 1;
+			border: 1px dashed #8c969f;
+			cursor: pointer;
+		}
+
 		&__linkForm {
 			border: 1px solid #eaeaea;
 			padding: 10px;
@@ -69,4 +76,8 @@
 			cursor: pointer;
 		}
 	}
+}
+
+.social_dragging {
+	list-style: none;
 }

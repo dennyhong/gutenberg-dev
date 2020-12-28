@@ -23,6 +23,11 @@ import {
 import { useSelect } from "@wordpress/data";
 import { isBlobURL } from "@wordpress/blob";
 import { __ } from "@wordpress/i18n";
+import {
+	SortableContainer,
+	SortableElement,
+	arrayMove,
+} from "react-sortable-hoc";
 
 const Edit = ({
 	attributes,
@@ -113,6 +118,55 @@ const Edit = ({
 				idx === selectedSocialIdx ? { ...item, [key]: value } : item
 			),
 		});
+
+	const handleRemoveSocial = (evt) => {
+		evt.preventDefault();
+		const idxToRemove = selectedSocialIdx;
+		setSelectedSocialIdx(null);
+		setAttributes({
+			social: social.filter((_, idx) => idx !== idxToRemove),
+		});
+	};
+
+	// react-sortable-hoc
+	const SotableList = SortableContainer(() => {
+		return (
+			<ul>
+				{social.map((item, idx) => {
+					const SortableItem = SortableElement(() => {
+						return (
+							<li
+								key={idx}
+								onClick={setSelectedSocialIdx.bind(this, idx)}
+								className={selectedSocialIdx === idx ? "is-selected" : ""}>
+								<Dashicon icon={item.icon} size={16} />
+							</li>
+						);
+					});
+					return <SortableItem key={idx} index={idx} />;
+				})}
+
+				{isSelected && (
+					<li className={`wp-block-firsttheme-blocks-team-member__addIconLi`}>
+						<Tooltip text={__("Add Item", "firsttheme-blocks")}>
+							<button
+								className={`wp-block-firsttheme-blocks-team-member__addIcon`}
+								onClick={handleAddNewSocial}>
+								<Dashicon icon="plus" size={16} />
+							</button>
+						</Tooltip>
+					</li>
+				)}
+			</ul>
+		);
+	});
+
+	const handleSortEnd = ({ oldIndex, newIndex }) => {
+		setAttributes({
+			social: arrayMove(social, oldIndex, newIndex),
+		});
+		setSelectedSocialIdx(newIndex);
+	};
 
 	return (
 		<Fragment>
@@ -216,34 +270,16 @@ const Edit = ({
 
 				{/* Social Icons */}
 				<div className={`wp-block-firsttheme-blocks-team-member__social`}>
-					<ul>
-						{social.map((item, idx) => (
-							<li
-								key={idx}
-								onClick={setSelectedSocialIdx.bind(this, idx)}
-								className={selectedSocialIdx === idx ? "is-selected" : ""}>
-								<Dashicon icon={item.icon} size={16} />
-							</li>
-						))}
-
-						{/* Add more social link */}
-						{isSelected && (
-							<li
-								className={`wp-block-firsttheme-blocks-team-member__addIconLi`}>
-								<Tooltip text={__("Add Item", "firsttheme-blocks")}>
-									<button
-										className={`wp-block-firsttheme-blocks-team-member__addIcon`}
-										onClick={handleAddNewSocial}>
-										<Dashicon icon="plus" size={16} />
-									</button>
-								</Tooltip>
-							</li>
-						)}
-					</ul>
+					<SotableList
+						axis="x"
+						distance={10}
+						onSortEnd={handleSortEnd}
+						helperClass={`social_dragging`}
+					/>
 				</div>
 
 				{/* Edit icon form */}
-				{selectedSocialIdx && (
+				{(selectedSocialIdx || selectedSocialIdx === 0) && (
 					<div className={`wp-block-firsttheme-blocks-team-member__linkForm`}>
 						<TextControl
 							label={__("Icon", "firsttheme-blocks")}
@@ -255,7 +291,9 @@ const Edit = ({
 							value={social[selectedSocialIdx].link}
 							onChange={handleSocialChange("link")}
 						/>
-						<a className={`wp-block-firsttheme-blocks-team-member__removeLink`}>
+						<a
+							className={`wp-block-firsttheme-blocks-team-member__removeLink`}
+							onClick={handleRemoveSocial}>
 							{__("Remove Link", "firsttheme-blocks")}
 						</a>
 					</div>
