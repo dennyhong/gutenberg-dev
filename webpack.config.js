@@ -88,6 +88,11 @@ module.exports = (env, argv) => {
 		// Source Maps
 		devtool: isDevelopment() ? "cheap-module-source-map" : "source-map",
 
+		watchOptions: {
+			poll: true,
+			ignored: path.resolve(__dirname, "node_modules"),
+		},
+
 		// Skip bundling: Look for global variable instead of node_modules
 		externals: {
 			jquery: "jQuery",
