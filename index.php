@@ -73,6 +73,8 @@ function firsttheme_blocks_register() {
   // Register blocks
   firsttheme_blocks_register_block_type('firstblock');
   firsttheme_blocks_register_block_type('secondblock');
+  firsttheme_blocks_register_block_type('team-member');
+  firsttheme_blocks_register_block_type('team-members');
 }
 add_action('init', 'firsttheme_blocks_register');
 
