@@ -133,7 +133,7 @@ function firsttheme_blocks_enqueue_assets() {
   wp_enqueue_script(
     'firsttheme-blocks-editor-js',
     plugins_url('dist/editor_script.js',__FILE__),
-    array( 'wp-data' )
+    array( 'wp-data', 'wp-plugins', 'wp-edit-post', 'wp-i18n', 'wp-components' )
   );
 }
 add_action( "enqueue_block_editor_assets", "firsttheme_blocks_enqueue_assets" );
@@ -151,4 +151,29 @@ function firsttheme_blocks_register_meta() {
   ));
 }
 add_action( 'init', 'firsttheme_blocks_register_meta' );
+
+// Set a post template
+function firsttheme_blocks_register_post_template() {
+  $post_type_object = get_post_type_object( 'post' );
+  $post_type_object->template = array(
+    array( 'firsttheme-blocks/meta' ),
+    array( 'core/paragraph', array(
+      'content' => 'Default Content'
+    )),
+    array(
+      'firsttheme-blocks/team-members',
+      array( 'columns' => 2 ),
+      // Inner Blocks
+      array(
+        array('firsttheme-blocks/team-member', array(
+          'title' => 'Default Title'
+        )),
+        array('firsttheme-blocks/team-member' ),
+      )
+    )
+  );
+
+  // $post_type_object->template_lock = "all";
+}
+add_action( "init", "firsttheme_blocks_register_post_template" )
 ?>
