@@ -49,7 +49,7 @@ function firsttheme_blocks_register() {
   wp_register_script(
     'firsttheme-blocks-editor-script', // Script handle
     plugins_url('dist/editor.js', __FILE__), // File Url
-    array( 'wp-blocks','wp-i18n','wp-element', 'wp-editor', 'wp-components', 'wp-blob', 'wp-data' ,'lodash' ) // Deps
+    array( 'wp-blocks','wp-i18n','wp-element', 'wp-editor', 'wp-components', 'wp-blob', 'wp-data' , 'wp-html-entities' , 'lodash' ) // Deps
   );
   // Register frontend script
   wp_register_script(
@@ -91,7 +91,6 @@ function firsttheme_blocks_register() {
     )
   ));
 }
-
 add_action('init', 'firsttheme_blocks_register');
 
 function firsttheme_blocks_render_latest_posts_block( $attributes ) {
@@ -99,6 +98,12 @@ function firsttheme_blocks_render_latest_posts_block( $attributes ) {
   $args = array(
     'posts_per_page' => $attributes['numberOfPosts']
   );
+
+  // If there are categories selected
+  if ( $attributes['postCategories'] ) {
+    $args['cat'] = $attributes['postCategories'];
+  };
+
   $query = new WP_Query($args);
   $posts = '';
 

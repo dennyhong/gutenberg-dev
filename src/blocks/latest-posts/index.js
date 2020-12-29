@@ -1,6 +1,8 @@
 import { registerBlockType } from "@wordpress/blocks";
 import { __ } from "@wordpress/i18n";
+
 import Edit from "./Edit";
+import "./style.editor.scss";
 
 registerBlockType("firsttheme-blocks/latest-posts", {
 	title: __("Latest Posts", "firsttheme-blocks"),
