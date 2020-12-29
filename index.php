@@ -49,7 +49,7 @@ function firsttheme_blocks_register() {
   wp_register_script(
     'firsttheme-blocks-editor-script', // Script handle
     plugins_url('dist/editor.js', __FILE__), // File Url
-    array( 'wp-blocks','wp-i18n','wp-element', 'wp-editor', 'wp-components', 'wp-blob', 'wp-data' , 'wp-html-entities' , 'lodash' ) // Deps
+    array( 'wp-blocks', 'wp-block-editor', 'wp-i18n','wp-element', 'wp-editor', 'wp-components', 'wp-blob', 'wp-data' , 'wp-html-entities' , 'lodash' ) // Deps
   );
   // Register frontend script
   wp_register_script(
@@ -78,6 +78,7 @@ function firsttheme_blocks_register() {
   firsttheme_blocks_register_block_type('redux');
   firsttheme_blocks_register_block_type('todo-list');
   firsttheme_blocks_register_block_type('todo-info');
+  firsttheme_blocks_register_block_type('meta');
 
   // Dynamic Block
   // Attributes of dynamic blocks need to be declared in php arrays
@@ -137,4 +138,17 @@ function firsttheme_blocks_enqueue_assets() {
 }
 add_action( "enqueue_block_editor_assets", "firsttheme_blocks_enqueue_assets" );
 
+// Register metadata
+function firsttheme_blocks_register_meta() {
+  register_meta( 'post', '_firsttheme_blocks_post_subtitle', array(
+    'show_in_rest' => true,
+    'type' => 'string',
+    'single' => true,
+    'sanitize_callback' => 'sanitize_text_field',
+    'auth_callback' => function() {
+      return current_user_can( 'edit_posts');
+    }
+  ));
+}
+add_action( 'init', 'firsttheme_blocks_register_meta' );
 ?>
