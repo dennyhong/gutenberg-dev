@@ -75,6 +75,8 @@ function firsttheme_blocks_register() {
   firsttheme_blocks_register_block_type('secondblock');
   firsttheme_blocks_register_block_type('team-member');
   firsttheme_blocks_register_block_type('team-members');
+  firsttheme_blocks_register_block_type('redux');
+  firsttheme_blocks_register_block_type('todo-list');
 
   // Dynamic Block
   // Attributes of dynamic blocks need to be declared in php arrays
@@ -123,5 +125,15 @@ function firsttheme_blocks_render_latest_posts_block( $attributes ) {
     return '<div' . __('No Posts Found','firsttheme-blocks') . '</div>';
   }
 }
+
+// Enqueue redux store script
+function firsttheme_blocks_enqueue_assets() {
+  wp_enqueue_script(
+    'firsttheme-blocks-editor-js',
+    plugins_url('dist/editor_script.js',__FILE__),
+    array( 'wp-data' )
+  );
+}
+add_action( "enqueue_block_editor_assets", "firsttheme_blocks_enqueue_assets" );
 
 ?>

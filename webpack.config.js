@@ -14,6 +14,7 @@ module.exports = (env, argv) => {
 		entry: {
 			editor: "./src/editor.js", // Editor only script
 			script: "./src/scripts.js", // Frontend + Editor script
+			editor_script: "./src/editor_script.js",
 		},
 
 		output: {
@@ -103,6 +104,7 @@ module.exports = (env, argv) => {
 			"@wordpress/blocks": ["wp", "blocks"],
 			"@wordpress/i18n": ["wp", "i18n"],
 			"@wordpress/editor": ["wp", "editor"],
+			"@wordpress/block-editor": ["wp", "blockEditor"],
 			"@wordpress/components": ["wp", "components"],
 			"@wordpress/element": ["wp", "element"],
 			"@wordpress/blob": ["wp", "blob"],
