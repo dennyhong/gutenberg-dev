@@ -2,6 +2,7 @@ import { registerBlockType } from "@wordpress/blocks";
 import { __ } from "@wordpress/i18n";
 
 import Edit from "./Edit";
+import "./TodoInfo";
 
 registerBlockType("firsttheme-blocks/todo-list", {
 	title: __("Redux Todo List", "firsttheme-blocks"),

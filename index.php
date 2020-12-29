@@ -77,6 +77,7 @@ function firsttheme_blocks_register() {
   firsttheme_blocks_register_block_type('team-members');
   firsttheme_blocks_register_block_type('redux');
   firsttheme_blocks_register_block_type('todo-list');
+  firsttheme_blocks_register_block_type('todo-info');
 
   // Dynamic Block
   // Attributes of dynamic blocks need to be declared in php arrays
